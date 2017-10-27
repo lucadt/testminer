@@ -1,0 +1,119 @@
+description = """
+TestMiner
+
+Project name: ${project.name}
+
+More detailed information here... """
+
+version = '1.0-alpha'
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+project(':indexer') {
+
+    apply plugin: 'java'
+
+    version = '1.0-alpha'
+
+    configurations {
+        extraLibs
+    }
+
+    dependencies {
+        extraLibs group: 'com.google.code.gson', name: 'gson', version: '+'
+        extraLibs group: 'org.apache.commons', name: 'commons-lang3', version: '+'
+        configurations.compile.extendsFrom(configurations.extraLibs)
+    }
+
+    jar {
+        from {
+            configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+
+    uploadArchives {
+        repositories {
+            flatDir {
+                dirs "$rootProject.projectDir/release"
+            }
+        }
+    }
+
+}
+
+project(':analysis') {
+
+    apply plugin: 'java'
+    apply plugin: 'scala'
+
+    version = '1.0-alpha'
+
+    configurations {
+        runtime {
+            extendsFrom compile
+        }
+        extraLibs
+    }
+
+    dependencies {
+        extraLibs group: 'org.scala-lang', name: 'scala-library', version: '2.11.8'
+        extraLibs group: 'io.spray', name: 'spray-json_2.11', version: '+'
+        extraLibs group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.core', version: '+'
+        extraLibs group: 'org.apache.commons', name: 'commons-lang3', version: '+'
+        extraLibs group: 'com.github.tototoshi', name: 'scala-csv_2.11', version: '1.+'
+        extraLibs group: 'org.eclipse.aether', name: 'aether-impl', version: '1.1.0'
+        extraLibs group: 'org.eclipse.aether', name: 'aether-connector-basic', version: '1.1.0'
+        extraLibs group: 'org.eclipse.aether', name: 'aether-transport-file', version: '1.1.0'
+        extraLibs group: 'org.eclipse.aether', name: 'aether-transport-http', version: '1.1.0'
+        extraLibs group: 'org.apache.maven', name: 'maven-aether-provider', version: '3.3.9'
+        extraLibs files('libs/maven_indexer/indexer-cli-deps.jar')
+        extraLibs files('libs/maven_indexer/indexer-core-deps.jar')
+        extraLibs files('libs/maven_indexer/indexer-examples-basic.jar')
+        configurations.compile.extendsFrom(configurations.extraLibs)
+    }
+
+    jar {
+        from {
+            configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+
+    task index(type: JavaExec) {
+        description = "Download of Maven Central index"
+        classpath sourceSets.main.runtimeClasspath
+        main = "testminer.maven.DownloadIndex"
+        if ( System.getProperty("exec.args") != null ) {
+            args System.getProperty("exec.args").trim().split(",")
+        }
+    }
+
+    task parse(type: JavaExec) {
+        description = "Parsing and analysis of Maven Central source-code"
+        classpath sourceSets.main.runtimeClasspath
+        main = "testminer.parser.ParseSource"
+        if ( System.getProperty("exec.args") != null ) {
+            args System.getProperty("exec.args").trim().split(",")
+        }
+    }
+
+    uploadArchives {
+        repositories {
+            flatDir {
+                dirs "$rootProject.projectDir/release"
+            }
+        }
+    }
+
+}
+
+
+task copyDeps(type: Copy) {
+    from(subprojects.configurations)
+    into project.file('release')
+}
+
+task copyFiles(dependsOn: [copyDeps])
