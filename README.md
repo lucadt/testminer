@@ -16,8 +16,8 @@ We have two (almost) equivalent implementation of TestMiner, one written in Pyth
 The minimum software requirements to run and compile TestMiner are:
 - Java Virtual Machine (version 7 or greater)
 - Python (version 2.7 or greater)
-- Gradle (version X or greater)
-- Scala (version Y or greater)
+- Gradle (version 3.3 or greater)
+- Scala (version 2.10.x or greater)
 
 ## Tutorial
 
@@ -30,7 +30,7 @@ downloaded from Maven Central.
 we removed all the method signatures that are prefixed with one of the class-under-test. The file *packages_to_filter.txt*
 contains the prefixes that are filtered.
  
-The snapshot date for the data is *DD.MM.YYYY*. If you desire to get obtain an updated set of strings you can execute 
+The snapshot date for the data is *19-02-2017*. If you desire to get obtain an updated set of strings you can execute 
 three steps otherwise TestMiner is ready to be used (see step 4.).
 
 ### 1. Download Maven Central index (optional)
