@@ -1,6 +1,6 @@
 ## TestMiner
 
-TestMiner is an approach described in our ASE paper:
+TestMiner extracts test input values, such as strings, from a corpus of existing tests and suggests these values to a test generation tool. The approach is described in our ASE 2017 paper:
 
 ```
 Saying ‘Hi!’ Is Not Enough: Mining Inputs for Effective Test Generation
