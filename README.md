@@ -19,6 +19,16 @@ The minimum software requirements to run and compile TestMiner are:
 - Gradle (version 3.3 or greater)
 - Scala (version 2.10.x or greater)
 
+A problem with [*zinc*](https://stackoverflow.com/questions/43039340/gradle-task-compilescala-fails-on-missing-value-for-zincclasspath) may cause compilation problems using Gradle. An alternative solution to compile TestMiner is to use [Docker](https://www.docker.com) with a script similar to:
+
+```
+FROM frekele/gradle:3.3-jdk8 
+USER root 
+WORKDIR /source 
+COPY . /source 
+RUN gradle
+```
+
 ## Tutorial
 
 The first three steps indicated below are optional. The three applications are used to prepare the context-value pairs
